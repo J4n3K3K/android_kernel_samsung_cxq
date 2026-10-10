@@ -245,13 +245,18 @@ SECTIONS
 	__pecoff_data_size = ABSOLUTE(. - __initdata_begin);
 	_end = .;
 
-	STABS_DEBUG
-
-	HEAD_SYMBOLS
-
+	/*
+	 * Place the RTIC bss before STABS_DEBUG: the non-allocated .stab
+	 * sections set the location counter to 0, so a .bss block placed
+	 * after them starts at VMA 0 and out of ADRP range of the code.
+	 */
 	.bss : {			/* bss segment		*/
          RTIC_BSS
 	}
+
+	STABS_DEBUG
+
+	HEAD_SYMBOLS
 }
 
 /*
